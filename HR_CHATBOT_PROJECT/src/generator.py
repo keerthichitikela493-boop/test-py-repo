@@ -8,17 +8,20 @@ generator = pipeline(
 )
 
 def generate_answer(query, context):
+
+    context_text = " ".join(context) if context else "No info available"
+
     prompt = f"""
-    Answer the question based only on the context below.
+You are a friendly HR assistant.
 
-    Context:
-    {context}
+Context:
+{context_text}
 
-    Question:
-    {query}
+Employee question: {query}
 
-    Answer:
-    """
 
-    result = generator(prompt)[0]["generated_text"]
+"""
+
+    result = generator(prompt, max_new_tokens=120)[0]["generated_text"]
     return result.strip()
+

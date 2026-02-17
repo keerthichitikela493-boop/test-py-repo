@@ -1,15 +1,39 @@
 # =========================================
 # IMPORTS
 # =========================================
+import streamlit as st
 import sqlite3
+import os
 from retriever import search
 from generator import generate_answer
 
 
 # =========================================
+# PAGE CONFIG
+# =========================================
+st.set_page_config(page_title="HR Chat Bot", page_icon="🤖", layout="centered")
+
+
+# =========================================
+# BLUE BACKGROUND
+# =========================================
+st.markdown("""
+<style>
+.stApp {
+    background-color:#0a1f44;
+    color:white;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
+# =========================================
 # DATABASE SETUP
 # =========================================
-conn = sqlite3.connect("users.db")
+BASE_DIR = os.path.dirname(__file__)
+db_path = os.path.join(BASE_DIR, "users.db")
+
+conn = sqlite3.connect(db_path, check_same_thread=False)
 cursor = conn.cursor()
 
 cursor.execute("""
@@ -25,69 +49,95 @@ CREATE TABLE IF NOT EXISTS users(
 # SAVE USER FUNCTION
 # =========================================
 def save_user(name, email, college):
+
     cursor.execute("SELECT * FROM users WHERE email=?", (email,))
     if cursor.fetchone():
-        print("\nUser already registered.\n")
-        return
+        return False
 
     cursor.execute(
         "INSERT INTO users VALUES (?,?,?)",
         (name, email, college)
     )
     conn.commit()
-    print("\nDetails saved successfully!\n")
+
+    print("Saved:", name, email, college)
+    return True
 
 
 # =========================================
-# SHOW USERS FUNCTION
+# TITLE
 # =========================================
-def show_users():
-    cursor.execute("SELECT * FROM users")
-    rows = cursor.fetchall()
+st.title("🤖 HR Chat Bot")
+st.header("Welcome to the Unlox Academy")
+st.subheader("Feel free to ask your queries")
 
-    print("\nStored Users:\n")
-    print("Name | Email | College")
-    print("-"*40)
-
-    for row in rows:
-        print(f"{row[0]} | {row[1]} | {row[2]}")
-    print()
+st.divider()
 
 
 # =========================================
-# USER REGISTRATION
+# USER FORM
 # =========================================
-print("\n===== HR CHATBOT REGISTRATION =====\n")
+st.markdown("### Enter Your Details")
 
-name = input("Enter your name: ")
-email = input("Enter your email: ")
-college = input("Enter your college: ")
+name = st.text_input("Name")
+email = st.text_input("Email")
+college = st.text_input("College")
 
-save_user(name, email, college)
+if st.button("Submit Details"):
 
-print(f"Welcome {name}! 🎉")
+    if name and email and college:
+
+        status = save_user(name, email, college)
+
+        if status:
+            st.success(f"Hello {name} 👋")
+        else:
+            st.warning("User already registered")
+
+        st.session_state.user_ready = True
+
+    else:
+        st.warning("Please fill all fields")
+
+
+st.divider()
 
 
 # =========================================
-# CHATBOT LOOP
+# CHATBOT SECTION
 # =========================================
-print("\nHR Chatbot Ready!")
-print("Type 'exit' to stop")
-print("Type 'show users' to view stored users\n")
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-while True:
+if st.session_state.get("user_ready"):
 
-    query = input("You: ")
+    st.markdown("### 💬 HR Assistant")
 
-    if query.lower() == "exit":
-        print("\nBot: Goodbye! Have a great day 😊\n")
-        break
+    # show chat history
+    for msg in st.session_state.messages:
+        with st.chat_message(msg["role"]):
+            st.markdown(msg["content"])
 
-    elif query.lower() == "show users":
-        show_users()
-        continue
+    # user input
+    prompt = st.chat_input("Ask HR anything...")
 
-    context = search(query)
-    answer = generate_answer(query, context)
+    if prompt:
 
-    print("Bot:", answer, "\n")
+        # store user message
+        st.session_state.messages.append({"role": "user", "content": prompt})
+
+        with st.chat_message("user"):
+            st.markdown(prompt)
+
+        # generate response
+        context = search(prompt)
+        answer = generate_answer(prompt, context)
+
+        # show bot reply
+        with st.chat_message("assistant"):
+            st.markdown(answer)
+
+        st.session_state.messages.append({"role": "assistant", "content": answer})
+
+else:
+    st.info("Please enter your details above to start chatting.")

@@ -1,7 +1,13 @@
 [
-  {"question":"What are the working hours?","answer":"Standard working hours are 11:30 AM to 8:30 PM."},
+  {"question":"What are the working hours?","answer":"Standard working hours are 11:00 AM to 8:00 PM."},
   {"question":"How can I apply for leave?","answer":"You can apply for leave through the employee portal under the Leave section."},
   {"question":"How many paid leaves do employees get?","answer":"Employees receive 20 paid leaves per year."},
+  {"question":"How many days off?","answer":"5 days off in a month."},
+  {"question":"What is the process for applying for leave?","answer":"To apply for leave, log in to the employee portal, navigate to the Leave section, select the type of leave, choose the dates, and submit your application for manager approval."},
+  {"question":"Can I carry forward unused leaves?","answer":"Yes, you can carry forward up to 5 unused paid leaves to the next year."},
+  {"question":"What is the sick leave policy?","answer":"Employees are entitled to 10 sick leaves per year, which can be availed with a medical certificate if required."},
+  {"question":"How do I check my leave balance?","answer":"Your leave balance is displayed in the Leave section of the employee portal."},
+  {"question":"What happens if I exceed my leave balance?","answer":"If you exceed your leave balance, you may need to take unpaid leave or discuss options with your manager and HR."},
   {"question":"What is the probation period?","answer":"The probation period is 6 months from the date of joining."},
   {"question":"How do I check my salary slip?","answer":"Salary slips are available in the payroll section of the employee portal."},
   {"question":"When is salary credited?","answer":"Salary is credited on the last working day of each month."},
@@ -38,5 +44,18 @@
   {"question":"Can I take half-day leave?","answer":"Yes, half-day leave can be applied through the leave system."},
   {"question":"How do I request a salary advance?","answer":"Submit a request through HR along with justification."},
   {"question":"Are there company events or team outings?","answer":"Yes, the company organizes events, celebrations, and team-building activities."},
-  {"question":"Where can I read company policies?","answer":"All policies are available in the employee handbook portal."}
+  {"question":"Where can I read company policies?","answer":"All policies are available in the employee handbook portal."},
+  {"question":"Where is company Location?","answer":"Hustle Hub, 17th Cross Road, Sector 4, HSR Layout, Bangalore 560102."},
+  {"question":"Location of the company?","answer":"Hustle Hub, 17th Cross Road, Sector 4, HSR Layout, Bangalore 560102."},
+   {"question":"office location?","answer":"Hustle Hub, 17th Cross Road, Sector 4, HSR Layout, Bangalore 560102."},
+  {"question":"company opening time?","answer":"company opens from 11:00 AM to 8:00 PM."},
+  {"question":"Timings of the company?","answer":"company opens from 11:00 AM to 8:00 PM."},
+  {"question":"reporting time?","answer":"company opens from 11:00 AM to 8:00 PM."},
+  {"question":" closing time?","answer":"company closes at 8:00 PM."},
+  {"question":"company closing time?","answer":"company closes at 8:00 PM."},
+  {"question":"How can I contact HR?","answer":"You can contact HR via email at info_hr@unloxacademy.com or visit the HR office during working hours."},
+  {"question":"What is the company culture like?","answer":"Our company culture emphasizes innovation, collaboration, and continuous learning."},
+  {"question":"Are there opportunities for career growth?","answer":"Yes, we encourage internal mobility and provide resources for career development."},
+  {"question":"How do I give feedback to management?","answer":"You can provide feedback through regular surveys, one-on-one meetings, or directly to your manager."}
 ]
+

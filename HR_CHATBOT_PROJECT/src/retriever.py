@@ -6,36 +6,53 @@ import numpy as np
 from embedder import embed_text
 
 
-# ---------------- LOAD JSON FILE SAFELY ----------------
-BASE_DIR = os.path.dirname(__file__)  # folder where this file exists
+# ---------------- LOAD JSON FILE ----------------
+BASE_DIR = os.path.dirname(__file__)
 file_path = os.path.join(BASE_DIR, "hr_faq.json")
 
 with open(file_path, "r", encoding="utf-8") as f:
     data = json.load(f)
 
 
-# ---------------- EXTRACT QUESTIONS & ANSWERS ----------------
+# ---------------- PREPARE DATA ----------------
 questions = [item["question"] for item in data]
 answers = [item["answer"] for item in data]
 
 
 # ---------------- CREATE EMBEDDINGS ----------------
-embeddings = embed_text(questions)
+embeddings = embed_text(questions).astype("float32")
 
 
-# ---------------- BUILD FAISS INDEX ----------------
+# ---------------- NORMALIZE VECTORS (IMPORTANT) ----------------
+faiss.normalize_L2(embeddings)
+
+
+# ---------------- BUILD INDEX ----------------
 dimension = embeddings.shape[1]
-index = faiss.IndexFlatL2(dimension)
-index.add(np.array(embeddings))
+index = faiss.IndexFlatIP(dimension)  # cosine similarity
+index.add(embeddings)
 
 
 # ---------------- SEARCH FUNCTION ----------------
-def search(query, k=2):
-    query_vector = embed_text([query])
-    distances, indices = index.search(np.array(query_vector), k)
+def search(query, k=3, threshold=0.65):
+    query_vector = embed_text([query]).astype("float32")
+    faiss.normalize_L2(query_vector)
+
+    scores, indices = index.search(query_vector, k)
 
     results = []
-    for i in indices[0]:
-        results.append(answers[i])
 
-    return results
+    for score, idx in zip(scores[0], indices[0]):
+        if score >= threshold:
+            results.append({
+                "answer": answers[idx],
+                "score": float(score)
+            })
+
+    # ---------------- NO MATCH FOUND ----------------
+    if not results:
+        return ["I'm not sure about that yet. Please contact HR for accurate information."]
+
+    # ---------------- RETURN BEST ANSWER ONLY ----------------
+    best = max(results, key=lambda x: x["score"])
+    return [best["answer"]]
