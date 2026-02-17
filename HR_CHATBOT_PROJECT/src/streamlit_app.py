@@ -9,15 +9,15 @@ cursor = conn.cursor()
 
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS users(
-name TEXT,
-email TEXT,
-college TEXT
+    name TEXT,
+    email TEXT,
+    college TEXT
 )
 """)
 conn.commit()
 
-def save_user(name,email,college):
-    cursor.execute("INSERT INTO users VALUES(?,?,?)",(name,email,college))
+def save_user(name, email, college):
+    cursor.execute("INSERT INTO users VALUES(?,?,?)", (name, email, college))
     conn.commit()
 
 def get_users():
@@ -36,15 +36,10 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ---------------- TITLE ----------------
+# ---------------- TITLE & HEADER ----------------
 st.title("🤖 HR Chat Bot")
-
-# ---------------- HEADER ----------------
 st.header("Welcome to the Unlox Academy")
-
-# ---------------- SUBHEADER ----------------
 st.subheader("Feel free to ask your queries")
-
 st.divider()
 
 # ---------------- USER DETAILS ----------------
@@ -56,27 +51,13 @@ college = st.text_input("College")
 
 if st.button("Submit Details"):
     if name and email and college:
-        save_user(name,email,college)
-
+        save_user(name, email, college)
         st.success(f"Hello {name} 👋")
         st.write(f"📧 {email}")
         st.write(f"🎓 {college}")
-
         st.session_state.user_ready = True
     else:
         st.warning("Please fill all details")
-
-st.divider()
-
-# ---------------- VIEW USERS BUTTON ----------------
-if st.button("📊 View Registered Users"):
-    users = get_users()
-
-    if users:
-        st.markdown("### Stored Users")
-        st.table(users)
-    else:
-        st.info("No users registered yet")
 
 st.divider()
 
@@ -109,22 +90,3 @@ if st.session_state.get("user_ready"):
 
 else:
     st.info("Please enter your details above to start chatting.")
-
-# ---------------- HIDDEN ADMIN ACCESS ----------------
-
-st.divider()
-
-admin_key = st.text_input("", placeholder="Enter admin access key", type="password")
-
-if admin_key == "unloxadmin":   # ← change this secret key
-
-    st.success("Admin Access Granted")
-
-    users = get_users()
-
-    if users:
-        st.markdown("### Registered Users")
-        st.table(users)
-    else:
-        st.info("No users registered yet")
-
